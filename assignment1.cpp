@@ -40,7 +40,8 @@ void display(void) {
 
 void TimeEvent(int time_val) {
     time(&timer); // get the current date and time from system
-    localtime_s(&curr_time, &timer); 
+    //localtime_s(&curr_time, &timer); // windows
+    localtime_r(&timer, &curr_time);  //  linux
     glutPostRedisplay();
     glutTimerFunc(30, TimeEvent, 1);// By using a timed event, your application should run at the same speed on any machine.
 }
@@ -56,8 +57,8 @@ int main(int argc, char **argv) {
     glutInitDisplayMode(type);
     
     time(&timer); // get current date and time
-    localtime_s(&curr_time, &timer); 
-    
+    //localtime_s(&curr_time, &timer); // windows
+    localtime_r(&timer, &curr_time);  //  linux
     // set window size and create a window for rendering
     win_W = 512;
     win_H = 512;
