@@ -11,6 +11,7 @@ int win_H, win_W;
 time_t timer;
 struct tm curr_time;
 const double PI  = 3.141592653589793238463;
+int radius = 150;
 
 void reshape(int w, int h) {
     
@@ -40,6 +41,30 @@ void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
 	glEnd();
 }
 
+void tickMarks(){
+    	glPushMatrix();
+	glTranslatef(10.0, 10.0, 0.0);
+	glColor3f(0.2,0.2,0.2);
+	glLineWidth(2);
+	for(int angle=0; angle <= 360; angle +=30) {
+	glBegin(GL_LINES);
+	//printf("Angle: %d\n", angle);
+
+		if(angle == 0.0 || angle==90.0 || angle == 180.0 || angle == 270.0 || angle == 360.0 ) {
+		glColor3f(1.0,0.2,0.1);
+		glVertex2f(cos(angle * PI/180.0f)* (radius-1.2), sin(angle * PI/180.0f) * (radius-1.2));
+		glVertex2f(cos(angle * PI/180.0f)* radius, sin(angle * PI/180.0f) * radius);
+		}
+		else {
+		glColor3f(0.2,0.2,0.2);
+		glVertex2f(cos(angle * PI/180.0f)* (radius-0.5), sin(angle * PI/180.0f) * (radius-0.5));
+		glVertex2f(cos(angle * PI/180.0f)* radius, sin(angle * PI/180.0f) * radius);
+		}
+	glEnd();
+	}
+	glPopMatrix();
+}
+
 void display(void) {
     
     glClear(GL_COLOR_BUFFER_BIT);
@@ -47,7 +72,8 @@ void display(void) {
     // Insert your own code here
     
     drawFilledCircle(512/2,512/2,150);
-    
+    tickMarks();
+
     // Your code ends here
     
     glutSwapBuffers(); // swap the back buffer to front
