@@ -46,7 +46,7 @@ void display(void) {
     
     // Insert your own code here
     
-    drawFilledCircle(512/2,512/2,200);
+    drawFilledCircle(512/2,512/2,150);
     
     // Your code ends here
     
