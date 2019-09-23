@@ -1,6 +1,6 @@
 // assignment1.cpp : Defines the entry point for the console application.
 // Brandon Sylve
-// Clock assignment
+// Clock assignment 
 
 #include <iostream>
 #include <GL/glut.h>  
