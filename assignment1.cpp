@@ -10,7 +10,7 @@
 int win_H, win_W;
 time_t timer;
 struct tm curr_time;
-
+const double PI  = 3.141592653589793238463;
 
 void reshape(int w, int h) {
     
@@ -22,14 +22,31 @@ void reshape(int w, int h) {
     glTranslatef(0, -h, 0);
 }
 
+void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
+	int i;
+	int triangleAmount = 360; //# of triangles used to draw circle
+	
+	//GLfloat radius = 0.8f; //radius
+	GLfloat twicePi = 2.0f * PI;
+	
+	glBegin(GL_TRIANGLE_FAN);
+		glVertex2f(x, y); // center of circle
+		for(i = 0; i <= triangleAmount;i++) { 
+			glVertex2f(
+		            x + (radius * cos(i *  twicePi / triangleAmount)), 
+			    y + (radius * sin(i * twicePi / triangleAmount))
+			);
+		}
+	glEnd();
+}
+
 void display(void) {
     
     glClear(GL_COLOR_BUFFER_BIT);
     
     // Insert your own code here
     
-    
-    
+    drawFilledCircle(512/2,512/2,200);
     
     // Your code ends here
     
