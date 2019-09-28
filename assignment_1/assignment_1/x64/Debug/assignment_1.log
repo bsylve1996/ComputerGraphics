@@ -1,0 +1,12 @@
+﻿  assignment_1.cpp
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(25,18): warning C4244:  'argument': conversion from 'int' to 'GLfloat', possible loss of data
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(33,29): warning C4305:  'initializing': truncation from 'double' to 'GLfloat'
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(53,64): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(53,35): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(63,68): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(63,37): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(73,64): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(73,35): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(88,36): warning C4244:  'argument': conversion from 'int' to 'GLfloat', possible loss of data
+A:\Programming\C++\ComputerGraphics\assignment_1\assignment_1\assignment_1.cpp(88,25): warning C4244:  'argument': conversion from 'int' to 'GLfloat', possible loss of data
+  assignment_1.vcxproj -> A:\Programming\C++\ComputerGraphics\assignment_1\x64\Debug\assignment_1.exe
