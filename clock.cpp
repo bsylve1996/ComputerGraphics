@@ -1,148 +1,169 @@
+#include <iostream>
 #include <GL/glut.h>
 #include <math.h>
 #include <time.h>
 
-const GLfloat tam_x = 50.0f;
-const GLfloat tam_y = 50.0f;
+int win_H, win_W;
+time_t timer;
+struct tm curr_time;
+const double PI  = 3.141592653589793238463;
 
-const GLint sy = 30;
-const GLint my = 25;
-const GLint hy = 20;
+struct Point {
+	GLint x;
+	GLint y;
+};
 
-int hora;
-int minuto;
-int segundo;
-
-void circulo(GLfloat xc, GLfloat yc, GLfloat raio, bool fill)
-{
-  const GLfloat c = 3.14169f / 180.0f;
-  GLint i;
-  
-  glBegin(fill ? GL_TRIANGLE_FAN : GL_LINE_LOOP);
-  
-  for (i = 0; i <= 360; i += 2)
-  {
-    float a = i * c;
-    glVertex2f(xc + sin(a) * raio, yc + cos(a) * raio);
-  }
-  
-  glEnd();
-}
-
-// Função callback chamada para fazer o desenho
-void desenha(void)
-{
-	//Limpa a janela de visualização com a cor de fundo especificada 
-	glClear(GL_COLOR_BUFFER_BIT);
-
-    // Desenha os circulos	
-    glColor3f(1.0f, 1.0f, 0.0f); // amarelo
-    circulo(0, 0, tam_x, true);
+void reshape(int w, int h){
     
-    glColor3f(0.0f, 0.0f, 0.0f); // preto
-    circulo(0, 0, tam_x, false);  
-    
-    // Calcula o angulo do segundo
-    float anguloS = segundo * 6;
-    
-    // Desenha o ponteiro do segundo
-    glRotatef(-anguloS, 0.0f, 0.0f, 1.0f);
-
-    glBegin(GL_LINES);
-    glColor3f(1.0f, 0.0f, 0.0f); // vermelho
-    glVertex2i(0,0);
-    glVertex2i(0,sy);
-    glEnd();
-    
-    glLoadIdentity(); // Limpa as transformacoes
-
-    // Calcula o angulo do minuto
-    float anguloM = minuto * 6;
-
-    // Desenha o ponteiro do minuto
-    glRotatef(-anguloM, 0.0f, 0.0f, 1.0f);
-
-	glLineWidth(5);
-    glBegin(GL_LINES);
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex2i(0,0);
-    glVertex2i(0,my);
-    glEnd();
-    
-    glLoadIdentity(); // Limpa as transformacoes
-
-    // Calcula o angulo da hora
-	float anguloH = (hora + minuto/60.0) * 30;
-
-    // Desenha o ponteiro da hora
-    glRotatef(-anguloH, 0.0f, 0.0f, 1.0f);
-
-    glBegin(GL_LINES);
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex2i(0,0);
-    glVertex2i(0,hy);
-    glEnd();
-    
-    glLoadIdentity(); // Limpa as transformacoes
-
-	//Executa os comandos OpenGL 
-	glFlush();
-}
-
-void redimensiona(GLsizei largura, GLsizei altura)
-{
-     // Redimensiona a viewport para ficar com o mesmo tamanho da janela
-     glViewport(0, 0, largura, altura);    
-   
-    // Inicializa o sistema de coordenadas
+    glViewport(0, 0, w, h);       /* Establish viewing area to cover entire window. */
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    glOrtho(0, w, 0, h, -1, 1);
+    glScalef(1, -1, 1);
+    glTranslatef(0, -h, 0);
+}
+
+void draw_dda(Point p1, Point p2) {
+	GLfloat dx = p2.x - p1.x;
+	GLfloat dy = p2.y - p1.y;
+
+	GLfloat x1 = p1.x;
+	GLfloat y1 = p1.y;
+
+	GLfloat step = 0;
+
+	if(abs(dx) > abs(dy)) {
+		step = abs(dx);
+	} else {
+		step = abs(dy);
+	}
+
+	GLfloat xInc = dx/step;
+	GLfloat yInc = dy/step;
+
+	for(float i = 1; i <= step; i++) {
+		glVertex2i(x1, y1);
+		x1 += xInc;
+		y1 += yInc;
+	}
+}
+
+void init() {
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glPointSize(1.0f);
+	gluOrtho2D(0.0f, 640.0f, 0.0f, 480.0f);
+}
+
+void draw_circle(Point pC, GLfloat radius) {
+    /*
+	GLfloat step = 1/radius;
+	GLfloat x, y;
+
+	for(GLfloat theta = 0; theta <= 360; theta += step) {
+		x = pC.x + (radius * cos(theta));
+		y = pC.y + (radius * sin(theta));
+		glVertex2i(x, y);
+	}*/
+    int i;
+	int triangleAmount = 360; //# of triangles used to draw circle
+	
+	//GLfloat radius = 0.8f; //radius
+	GLfloat twicePi = 2.0f * PI;
+	
+	glBegin(GL_TRIANGLE_FAN);
+		glVertex2f(pC.x, pC.y); // center of circle
+		for(i = 0; i <= triangleAmount;i++) { 
+			glVertex2f(
+		        pC.x + (radius * cos(i *  twicePi / triangleAmount)), 
+			    pC.y + (radius * sin(i * twicePi / triangleAmount))
+			);
+		}
+	glEnd();
+}
+
+Point pC = {200, 200};
+GLint radius = 150;
+
+// radius of the needles from  the center
+GLint hRadius = 120;
+GLint mRadius = 130;
+GLint sRadius = 140;
+
+// angles of the three needles
+double hDegree = 0;
+double mDegree = 0;
+double sDegree = 0;
+
+void display(void) {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+	// Terminal Points for Needle
+	Point pHour, pMinute, pSecond;
+
+	pHour.y = pC.y + (hRadius * sin(hDegree));
+	pHour.x = pC.x + (hRadius * cos(hDegree));
+
+	pMinute.y = pC.y + (mRadius * sin(mDegree));
+	pMinute.x = pC.x + (mRadius * cos(mDegree));
+
+	pSecond.y = pC.y + (sRadius * sin(sDegree));
+	pSecond.x = pC.x + (sRadius * cos(sDegree));
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	glBegin(GL_POINTS);
+	glColor3f(1.0, 0.0, 1.0);
+	draw_circle(pC, radius);
+	glColor3f(1.0, 0.0, 0.0);
+	draw_dda(pC, pHour);
+
+	glColor3f(0.0, 1.0, 0.0);
+	draw_dda(pC, pMinute);
+
+	glColor3f(0.0, 0.0, 1.0);
+	draw_dda(pC, pSecond);
+	glEnd();
+	glFlush();
+
+	mDegree -= 0.001333333;
+	sDegree -= 0.08;
+	hDegree -= 0.0002733333;
+    glutSwapBuffers(); // swap the back buffer to front
+}
+
+void TimeEvent(int time_val){
+    time(&timer); // get the current date and time from system
+    //localtime_s(&curr_time, &timer); // use localtime_r(&timer, &curr_time); if using Xcode in MacOS
+    localtime_r(&timer, &curr_time);
+    glutPostRedisplay();
+    glutTimerFunc(30, TimeEvent, 1);// By using a timed event, your application should run at the same speed on any machine.
+}
+
+int main(int argc, char **argv) {
+GLenum type;
     
-    // Faz o mapeamento entre a viewport e o sistema de coordenadas 2D
-    // levando em consideracao a relacao entre a largura e a altura da viewport
-    // Nesse caso, o objeto renderizado vai mudar de tamanho conforme a janela
-    // aumentar ou diminuir
-    if (largura <= altura)
-       gluOrtho2D(-tam_x, tam_x, -tam_y * altura / largura, tam_y * altura / largura);
-    else
-       gluOrtho2D(-tam_x * largura / altura, tam_x * largura / altura, -tam_y, tam_y);
-       
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-}
-
-void move(int n)
-{
-     // Apos a execucao desse trecho a estrutura "datahora"
-     // tera armazenada a data/hora atual do relogio da maquina
-     time_t agora = time(0);
-     struct tm *datahora = localtime(&agora);
-     
-     hora = datahora->tm_hour;
-     minuto = datahora->tm_min;
-     segundo = datahora->tm_sec;
-     
-     glutPostRedisplay(); // Pede para redesenhar a tela. Vai chamar a funcao desenha()
-     glutTimerFunc(1000, move, 0);     // Pede para chamar de novo a funcao move
-}
-
-// Inicializa parâmetros de rendering
-void inicializa (void)
-{   
-    // Define a cor de fundo da janela de visualização (RGB)
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-}
-
-int main(int argc, char** argv) {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-	glutInitWindowSize(400,400);
-    glutInitWindowPosition(10,10);
-	glutCreateWindow("Relogio");
-	glutDisplayFunc(desenha);
-	glutReshapeFunc(redimensiona);
-	glutTimerFunc(1000, move, 0);
-	inicializa();
-	glutMainLoop();
-	return 0;
+    glutInit(&argc, argv);
+    
+    type = GLUT_DEPTH;
+    type |= GLUT_RGB;
+    type |= GLUT_DOUBLE;
+    glutInitDisplayMode(type);
+    
+    time(&timer); // get current date and time
+    //localtime_s(&curr_time, &timer); // use localtime_r(&timer, &curr_time); if using Xcode in MacOS
+    localtime_r(&timer, &curr_time);
+    
+    // set window size and create a window for rendering
+    win_W = 512;
+    win_H = 512;
+    glutInitWindowSize(win_H, win_W);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("My clock");
+    
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    
+    glutTimerFunc(30, TimeEvent, 1);
+    glutMainLoop();
+    return 0;
 }
