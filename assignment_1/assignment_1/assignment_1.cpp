@@ -46,35 +46,50 @@ void drawFilledCircle(GLfloat x, GLfloat y) {
 
 void drawHourHand() {
 	double hourDegrees = curr_time.tm_hour * 30.0 + curr_time.tm_min / 2.0 + curr_time.tm_sec / 120.0;
-
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(256, 256, 0);
+	glRotatef(hourDegrees, 0.0f, 0.0f, 1.0f);
+	glTranslatef(-256, -256, 0);
 	glBegin(GL_LINES);
-	glLineWidth(100);
-	glVertex2f(256, 256);
-	glVertex2f(70 * cos(hourDegrees) + 256, 70 * sin(hourDegrees) + 256);
+		glLineWidth(100);
+		glVertex2f(256, 256);
+		glVertex2f(256, 190);
 	glEnd();
+	glPopMatrix();
 }
 
 void drawMinuteHand() {
 	double minuteDegrees = curr_time.tm_min * 6.0 + curr_time.tm_sec / 10.0;
-	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(256, 256, 0);
+	glRotatef(minuteDegrees, 0.0f, 0.0f, 1.0f);
+	glTranslatef(-256, -256, 0);
 	glBegin(GL_LINES);
-	glLineWidth(100);
-	glVertex2f(256, 256);
-	glVertex2f(90 * cos(minuteDegrees) + 256, 90 * sin(minuteDegrees) + 256);
+		glLineWidth(100);
+		glVertex2f(256, 256);
+		glVertex2f(256, 130);
 	glEnd();
+	glPopMatrix();
 }
 
 void drawSecondHand() {
 	double secDegrees = curr_time.tm_sec * 6.0;
-	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(256, 256, 0);
+	glRotatef(secDegrees, 0.0f, 0.0f, 1.0f);
+	glTranslatef(-256, -256, 0);
 	glBegin(GL_LINES);
-	glLineWidth(100);
-	glVertex2f(256,256);
-	glVertex2f(100 * cos(secDegrees) + 256, 100 * sin(secDegrees) + 256);
+		glLineWidth(100);
+		glVertex2f(256,256);
+		glVertex2f(256, 120);
 	glEnd();
+	glPopMatrix();
 }
 
-void display(void) {
+void display(void) {/*
 	glClear(GL_COLOR_BUFFER_BIT);
 	if (colorAngle % 50 == 0) {
 		one = (float)sin(colorAngle) * 0.5f + 0.5f;
@@ -82,8 +97,9 @@ void display(void) {
 		three = (one + two) / 2;
 		glColor3f(one, two, three);
 	}
-	else
-		glColor3f(one, two, three);
+	else*/
+		//glColor3f(one, two, three);
+	glColor3f(1.0, 1.0, 1.0);
 	colorAngle++;
 	drawFilledCircle(win_H / 2, win_W / 2);
 	
